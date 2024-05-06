@@ -1,0 +1,40 @@
+function [q] = inverse(H,myrobot)
+    q = zeros(1, 6);
+    d = zeros(6, 1);
+    a = zeros(6, 1);
+    alpha = zeros(6, 1);
+    for i = 1:6
+        d(i, 1) = myrobot.links(i).d;
+        a(i, 1) = myrobot.links(i).a;
+        alpha(i, 1) = myrobot.links(i).alpha;
+    end
+    
+    o_c - H(1:3, 4) - H(1:3, 1:3)
+    x_c = H(1, 4);
+    y_c = H(2, 4);
+    z_c = H(3, 4);
+
+    q(1,1) = atan2(y_c, x_c) ...
+            - atan2(-d(2, 1), sqrt(x_c^2+y_c^2 - d(2, 1)^2));
+    D = (a(2,1)^2 + d(4,1)^2 - x_c^2 - y_c^2 + d(2,1)^2 - (z_c-d(1,1))^2) ...
+        / (2 * a(2, 1) * d(4, 1))
+    q(1,3) = atan2(-D, sqrt(1-D^2));
+    
+    q(1,2) = atan2(z_c-d(1,1), sqrt(x_c^2 + y_c^2 - d(2,1)^2)) ...
+        -atan2(-d(4,1)*cos(q(1,3)), a(2,1)+d(4,1)*sin(q(1,3)));
+    
+    H_0_3 = eye(4);
+    
+    for i = 1:3
+        H_0_3 = H_0_3 * gettf(q(1, i), d(i, 1), a(i, 1), alpha(i, 1));
+    end
+    R_0_3 = H_0_3(1:3, 1:3);
+    
+    R_3_6 = R_0_3' * H(1:3, 1:3);
+    
+    q(1, 4) = atan2(R_3_6(2,3), R_3_6(1,3));
+    q(1, 5) = atan2(sqrt(1 - R_3_6(3,3)^2), R_3_6(3,3));
+    q(1, 6) = atan2(R_3_6(3,2), -R_3_6(3,1));
+    
+end
+

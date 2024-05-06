@@ -1,0 +1,19 @@
+function [outputArg1,outputArg2] = mypuma560(DH)
+%UNTITLED Summary of this function goes here
+%   Detailed explanation goes here
+% DH is a 6x4 table, the columns being a_i, \alpha_i, d_i, \theta_i
+
+links = Link.empty(0,6);
+
+for i = 1:6
+    links(i) = Link(
+        'theta', DH(i, 4),
+        'd', DH(i, 3),
+        'a', DH(i, 1),
+        'alpha', DH(i, 2),
+    );
+end
+outputArg1 = inputArg1;
+outputArg2 = inputArg2;
+end
+

@@ -1,0 +1,22 @@
+function [H] = forward(joint,myrobot)
+    d = zeros(6, 1);
+    a = zeros(6, 1);
+    alpha = zeros(6, 1);
+    
+    for i = 1:6
+        d(i, 1) = myrobot.links(i).d;
+        a(i, 1) = myrobot.links(i).a;
+        alpha(i, 1) = myrobot.links(i).alpha;
+    end
+    
+end
+
+function [H] = getTf(theta, d, a, alpha)
+    c_t = cos(theta);
+    s_t = sin(theta);
+    c_a = cos(alpha);
+    s_a = sin(alpha);
+    H = [c_t, -s_t*c_a, s_t*s_a, a*c_t;
+        s_t, c_t*c_a, -c_t*s_a, a*s_t;
+        0.0, s_a, 
+end
